@@ -22,7 +22,7 @@ wxGLCanvasSubClass::wxGLCanvasSubClass(wxFrame* parent)
 {
     int argc = 1;
     char* argv[1] = { 0 };
-    pitch = -2;
+    pitch = 0;
     roll = 0;
 
     this->Connect(wxEVT_PAINT, wxPaintEventHandler(wxGLCanvasSubClass::Paintit));
@@ -31,7 +31,7 @@ wxGLCanvasSubClass::wxGLCanvasSubClass(wxFrame* parent)
     glutInit(&argc, argv);
 }
 
-
+//wxのペイントイベントハンドラ
 void wxGLCanvasSubClass::Paintit(wxPaintEvent& event)
 {
     Render();
@@ -41,11 +41,11 @@ void wxGLCanvasSubClass::Paintit(wxPaintEvent& event)
 void wxGLCanvasSubClass::Render()
 {
     static const GLfloat light_pos[4] = { 4, 4, 4 ,1};//アフィン変換用の座標系;長さ4
-    static auto glc = wxGLContext(this);
+    static auto glc = wxGLContext(this);//描画ウインドウ指定するためのやつ
 
     int id = 0;
 
-    wxPaintDC(this);
+    wxPaintDC(this);//やんないと駄目らしい
     SetCurrent(glc);
 
     glEnable(GL_DEPTH_TEST);//フラグ有効化
@@ -136,6 +136,7 @@ void wxGLCanvasSubClass::Render()
     SwapBuffers();
 }
 
+//glutではなくwxのキーイベント
 void wxGLCanvasSubClass::OnKey(wxKeyEvent& event)
 {
     auto key = event.GetKeyCode();
@@ -172,7 +173,7 @@ IMPLEMENT_APP(MyApp)
 
 bool MyApp::OnInit()
 {
-    wxFrame* frame = new wxFrame(NULL, -1, wxT("Hello GL World"), wxPoint(50, 50), wxSize(200, 200));
+    wxFrame* frame = new wxFrame(NULL, -1, wxT("color cube"), wxDefaultPosition, wxSize(300, 300));
     new wxGLCanvasSubClass(frame);
 
     frame->Show(true);
